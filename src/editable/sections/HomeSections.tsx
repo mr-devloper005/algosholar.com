@@ -198,7 +198,7 @@ export function EditableHomeHero({ primaryTask, primaryRoute, posts, timeSection
 
 /* -------------------------- Browse by category -------------------------- */
 export function EditableStoryRail({ primaryRoute }: HomeSectionProps) {
-  const categories = SITE_CONFIG.tasks.filter((task) => task.enabled)
+  const categories = SITE_CONFIG.tasks.filter((task) => task.enabled && task.key !== 'article')
   if (!categories.length) return null
   return (
     <section className="bg-[var(--slot4-surface-bg)]">
@@ -212,14 +212,16 @@ export function EditableStoryRail({ primaryRoute }: HomeSectionProps) {
             See all <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {categories.map((task) => {
+        <div className={`${categories.length > 1 ? 'editable-auto-rail' : ''} mt-7 flex w-max gap-3`}>
+          {(categories.length > 1 ? [...categories, ...categories] : categories).map((task, index) => {
             const Icon = taskIcon[task.key] || FileText
             return (
               <Link
-                key={task.key}
+                key={`${task.key}-${index}`}
+                aria-hidden={index >= categories.length ? true : undefined}
+                tabIndex={index >= categories.length ? -1 : undefined}
                 href={task.route}
-                className="group flex flex-col items-center gap-3 rounded-xl border border-[var(--editable-border)] bg-[var(--slot4-surface-bg)] px-3 py-6 text-center transition duration-300 hover:-translate-y-1 hover:border-[var(--slot4-accent)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.10)]"
+                className="group flex w-44 shrink-0 flex-col items-center gap-3 rounded-xl border border-[var(--editable-border)] bg-[var(--slot4-surface-bg)] px-3 py-6 text-center transition duration-300 hover:-translate-y-1 hover:border-[var(--slot4-accent)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.35)]"
               >
                 <span className="flex h-14 w-14 items-center justify-center rounded-full bg-[var(--slot4-accent-soft)] text-[var(--slot4-accent)] transition group-hover:scale-105">
                   <Icon className="h-6 w-6" />
@@ -276,12 +278,13 @@ export function EditableMagazineSplit({ primaryTask, primaryRoute, posts, timeSe
   const activity = dedupePosts([...posts, ...timeSections.flatMap((section) => section.posts)]).slice(0, 9)
   if (!activity.length) return null
   return (
-    <section className="bg-[var(--slot4-warm)]">
+    <section className="editable-ember-field bg-[var(--slot4-warm)]">
       <div className={`py-14 sm:py-16 ${container}`}>
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold tracking-[-0.01em] sm:text-4xl">Recent activity</h2>
+          <p className="text-xs font-black uppercase tracking-[.3em] text-[#FFE8B4]">The AlgoSholar brief</p>
+          <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.01em] sm:text-4xl">Fresh ideas & standout businesses</h2>
           <p className="mx-auto mt-3 max-w-2xl text-[var(--slot4-muted-text)]">
-            The latest posts, reviews and finds from across {SITE_CONFIG.name}.
+            Read practical articles and discover listings selected from across {SITE_CONFIG.name}.
           </p>
         </div>
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

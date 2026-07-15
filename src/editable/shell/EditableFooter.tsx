@@ -7,18 +7,19 @@ import { globalContent } from '@/editable/content/global.content'
 import { useEditableLocalAuthSession } from '@/editable/components/EditableLocalAuthForms'
 
 export function EditableFooter() {
-  const taskLinks = SITE_CONFIG.tasks.filter((task) => task.enabled)
+  const taskLinks = SITE_CONFIG.tasks.filter((task) => task.enabled && task.key !== 'article')
   const year = new Date().getFullYear()
   const { session, logout } = useEditableLocalAuthSession()
 
   return (
-    <footer className="border-t border-[var(--editable-border)] bg-[var(--editable-footer-bg)] text-[var(--editable-footer-text)]">
+    <footer className="relative overflow-hidden border-t border-[#5E244E] bg-[var(--editable-footer-bg)] text-[var(--editable-footer-text)]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_25%_30%,rgba(170,28,65,.22),transparent_26%),radial-gradient(circle_at_80%_70%,rgba(230,132,87,.14),transparent_24%)]" />
       <div className="h-[2px] bg-[linear-gradient(90deg,transparent_0%,var(--slot4-accent)_50%,transparent_100%)]" />
-      <div className="mx-auto grid max-w-[var(--editable-container)] gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr] lg:px-8">
+      <div className="relative mx-auto grid max-w-[var(--editable-container)] gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr] lg:px-8">
         <div>
           <Link href="/" className="inline-flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center border border-[var(--slot4-accent)]/40 bg-[var(--slot4-surface-bg)]">
-              <img src="/favicon.png?v=20260413" alt={SITE_CONFIG.name} className="h-8 w-8 object-contain" />
+            <span className="flex h-16 w-16 items-center justify-center overflow-hidden border border-[var(--slot4-accent)]/40 bg-[var(--slot4-surface-bg)]">
+              <img src="/favicon.png?v=20260413" alt={`${SITE_CONFIG.name} logo`} className="h-14 w-14 scale-[2.15] object-contain transition duration-300 hover:scale-[2.3]" />
             </span>
             <span className="editable-display text-xl font-semibold tracking-[0.01em]">{SITE_CONFIG.name}</span>
           </Link>
