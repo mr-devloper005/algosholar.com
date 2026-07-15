@@ -97,8 +97,46 @@ body {
 }
 
 ::selection {
-  background: color-mix(in oklab, var(--slot4-accent-fill) 28%, transparent);
-  color: var(--slot4-page-text);
+  background: #FFE8B4;
+  color: #5E244E;
+}
+
+.editable-site-root { overflow: clip; }
+.editable-site-root main { position: relative; }
+
+.editable-site-root main::before {
+  content: '';
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  opacity: .28;
+  background-image: radial-gradient(circle, #E68457 0 2px, transparent 2.5px);
+  background-size: 83px 97px;
+  animation: ember-drift 18s linear infinite;
+  mix-blend-mode: screen;
+}
+
+@keyframes ember-drift {
+  from { transform: translate3d(0, 8vh, 0); }
+  to { transform: translate3d(35px, -105px, 0); }
+}
+
+.editable-auto-rail { animation: auto-rail 28s linear infinite; }
+.editable-auto-rail:hover { animation-play-state: paused; }
+@keyframes auto-rail { to { transform: translateX(calc(-50% - .375rem)); } }
+
+.editable-ember-field article:nth-child(3n + 1) { border-top: 3px solid #E68457; }
+.editable-ember-field article:nth-child(3n + 2) { transform: translateY(18px); border-color: #FFE8B4; }
+.editable-ember-field article:nth-child(3n) { background: linear-gradient(145deg,#5E244E,#1d0918); }
+.editable-ember-field article:hover { transform: translateY(-7px) rotate(-.25deg); box-shadow: 0 24px 70px rgba(170,28,65,.3); }
+
+.editable-site-root img { color: transparent; }
+.editable-site-root input, .editable-site-root textarea { color-scheme: dark; }
+
+@media (max-width: 640px) {
+  .editable-site-root main::before { opacity: .16; }
+  .editable-ember-field article:nth-child(3n + 2) { transform: none; }
 }
 
 ::-webkit-scrollbar-track {
