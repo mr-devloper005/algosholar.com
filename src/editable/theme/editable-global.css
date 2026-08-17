@@ -1,51 +1,243 @@
 /*
-  Editable global theme layer.
+  Editable global theme layer — "Crimson Deco" edition.
 
   Safe for UI editors / AI tools:
-  - Full site background
-  - Global text color
-  - Editable-only typography
-  - Selection color
-  - Scrollbar feel
-  - Article body typography accents
+  - Full site background + film-grain atmosphere
+  - Global text color and typography
+  - Deco frame / ornament primitives used by cards and sections
+  - Motion keyframes (marquee, reveal, glow, flicker)
+  - Article body typography
 
   Do not add data fetching, scripts, or route logic here.
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600;6..96,700;6..96,800;6..96,900&family=Outfit:wght@300;400;500;600;700;800&family=EB+Garamond:wght@400;500;600;700&display=swap');
 
-/* Per-task display + body typefaces (consumed via task-themes.ts). */
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&family=Syne:wght@500;600;700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@400;500;600;700&display=swap');
+/* ------------------------------------------------------------------ *
+   Base canvas
+ * ------------------------------------------------------------------ */
 
 body {
   background-color: var(--slot4-page-bg) !important;
   color: var(--slot4-page-text) !important;
   background-image: var(--slot4-body-gradient) !important;
+  background-attachment: fixed;
 }
 
 .editable-site-root {
-  /* Yelp-style clean sans, used for both display and body. */
-  --editable-font-display: 'Inter', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-  --editable-font-body: 'Inter', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-  /* Premium easing curve used across every hover + transition. */
+  --editable-font-display: 'Bodoni Moda', 'Times New Roman', serif;
+  --editable-font-body: 'Outfit', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --editable-font-read: 'EB Garamond', Georgia, 'Times New Roman', serif;
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+  font-family: var(--editable-font-body);
+  position: relative;
+  isolation: isolate;
+  overflow-x: clip;
+}
+
+/* Fixed film-grain + vignette wash over the whole site. Purely decorative. */
+.editable-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+}
+
+.editable-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(225, 18, 53, 0.16), transparent 62%),
+    radial-gradient(100% 70% at 50% 118%, rgba(141, 10, 32, 0.2), transparent 60%),
+    radial-gradient(140% 110% at 50% 50%, transparent 42%, rgba(0, 0, 0, 0.72) 100%);
+}
+
+.editable-site-root > *:not(.editable-grain):not(.editable-vignette) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ------------------------------------------------------------------ *
+   Typography
+ * ------------------------------------------------------------------ */
+
+.editable-site-root h1,
+.editable-site-root h2,
+.editable-site-root h3,
+.editable-site-root h4,
+.editable-display {
+  font-family: var(--editable-font-display);
+  letter-spacing: -0.015em;
+  font-optical-sizing: auto;
+}
+
+.editable-site-root p,
+.editable-site-root li,
+.editable-site-root input,
+.editable-site-root select,
+.editable-site-root button,
+.editable-site-root textarea,
+.editable-site-root label,
+.editable-site-root nav {
   font-family: var(--editable-font-body);
 }
 
-/*
-  Site-wide premium motion.
-
-  1. Unify the easing of every existing transition/hover to one refined curve.
-  2. Add a smooth "post open" entry animation that replays on each navigation
-     (driven by EditablePageMotion remounting the content per route).
-  Durations stay defined per-component via Tailwind utilities.
-*/
-.editable-site-root *,
-.editable-site-root *::before,
-.editable-site-root *::after {
-  transition-timing-function: var(--ease-premium);
+.editable-read {
+  font-family: var(--editable-font-read);
 }
+
+/* Letterspaced deco label, used for eyebrows, tabs and nav items. */
+.deco-label {
+  font-family: var(--editable-font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.32em;
+  font-weight: 600;
+  font-size: 0.6875rem;
+  line-height: 1;
+}
+
+.deco-label-sm {
+  letter-spacing: 0.26em;
+  font-size: 0.625rem;
+}
+
+/* Big display headline with a soft crimson bloom. */
+.deco-glow {
+  text-shadow:
+    0 0 22px rgba(225, 18, 53, 0.42),
+    0 0 60px rgba(225, 18, 53, 0.24);
+}
+
+.deco-glow-soft {
+  text-shadow: 0 0 18px rgba(225, 18, 53, 0.3);
+}
+
+/* ------------------------------------------------------------------ *
+   Deco frames & ornaments
+ * ------------------------------------------------------------------ */
+
+/* Double hairline frame with an inset second rule — the signature panel. */
+.deco-frame {
+  position: relative;
+  border: 1px solid var(--slot4-line);
+  background-clip: padding-box;
+}
+
+.deco-frame::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid var(--slot4-line-faint);
+  pointer-events: none;
+  transition: border-color 0.5s var(--ease-premium);
+}
+
+.deco-frame:hover::before {
+  border-color: var(--slot4-line);
+}
+
+/* Four corner brackets drawn with gradients — no extra markup needed. */
+.deco-corners::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--slot4-accent), var(--slot4-accent)),
+    linear-gradient(var(--slot4-accent), var(--slot4-accent)),
+    linear-gradient(var(--slot4-accent), var(--slot4-accent)),
+    linear-gradient(var(--slot4-accent), var(--slot4-accent)),
+    linear-gradient(var(--slot4-accent), var(--slot4-accent)),
+    linear-gradient(var(--slot4-accent), var(--slot4-accent)),
+    linear-gradient(var(--slot4-accent), var(--slot4-accent)),
+    linear-gradient(var(--slot4-accent), var(--slot4-accent));
+  background-repeat: no-repeat;
+  background-size:
+    18px 1px, 1px 18px,
+    18px 1px, 1px 18px,
+    18px 1px, 1px 18px,
+    18px 1px, 1px 18px;
+  background-position:
+    left 14px top 14px, left 14px top 14px,
+    right 14px top 14px, right 14px top 14px,
+    left 14px bottom 14px, left 14px bottom 14px,
+    right 14px bottom 14px, right 14px bottom 14px;
+  opacity: 0.55;
+  transition: opacity 0.5s var(--ease-premium);
+}
+
+.deco-corners:hover::after {
+  opacity: 1;
+}
+
+/* Ornamental rule: hairline — diamond — hairline. */
+.deco-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--slot4-accent);
+}
+
+.deco-rule::before,
+.deco-rule::after {
+  content: '';
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, transparent, var(--slot4-line), transparent);
+}
+
+.deco-diamond {
+  width: 7px;
+  height: 7px;
+  transform: rotate(45deg);
+  background: var(--slot4-accent);
+  box-shadow: 0 0 12px rgba(225, 18, 53, 0.7);
+}
+
+/* Card lift with a crimson bloom instead of a grey drop shadow. */
+.deco-lift {
+  transition:
+    transform 0.55s var(--ease-premium),
+    box-shadow 0.55s var(--ease-premium),
+    border-color 0.55s var(--ease-premium);
+}
+
+.deco-lift:hover {
+  transform: translateY(-6px);
+  border-color: var(--slot4-accent);
+  box-shadow:
+    0 22px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(225, 18, 53, 0.16),
+    0 0 40px rgba(225, 18, 53, 0.18);
+}
+
+/* Sweep of light that crosses a card on hover. */
+.deco-sweep {
+  position: relative;
+  overflow: hidden;
+}
+
+.deco-sweep > .deco-sweep-beam {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.07) 50%, transparent 62%);
+  transform: translateX(-120%);
+  transition: transform 0.9s var(--ease-premium);
+}
+
+.deco-sweep:hover > .deco-sweep-beam {
+  transform: translateX(120%);
+}
+
+/* ------------------------------------------------------------------ *
+   Motion
+ * ------------------------------------------------------------------ */
 
 @keyframes editable-enter {
   from {
@@ -58,66 +250,285 @@ body {
   }
 }
 
-/* The content region rises + fades on open; `backwards` clears the transform
-   afterwards so sticky sidebars keep working. */
 .editable-enter > * {
-  animation: editable-enter 0.6s var(--ease-premium) backwards;
+  animation: editable-enter 0.7s var(--ease-premium) backwards;
   will-change: transform, opacity;
 }
 
+@keyframes deco-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+.deco-marquee-track {
+  display: inline-flex;
+  align-items: center;
+  gap: 2.5rem;
+  white-space: nowrap;
+  animation: deco-marquee 38s linear infinite;
+  will-change: transform;
+}
+
+.deco-marquee:hover .deco-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes deco-pulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.06); }
+}
+
+.deco-pulse {
+  animation: deco-pulse 3.4s ease-in-out infinite;
+}
+
+@keyframes deco-flicker {
+  0%, 100% { opacity: 1; }
+  46% { opacity: 1; }
+  48% { opacity: 0.62; }
+  50% { opacity: 1; }
+  71% { opacity: 1; }
+  72% { opacity: 0.78; }
+  74% { opacity: 1; }
+}
+
+.deco-flicker {
+  animation: deco-flicker 7s ease-in-out infinite;
+}
+
+@keyframes deco-scan {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(400%); }
+}
+
+.deco-scan {
+  animation: deco-scan 6s linear infinite;
+}
+
+/* Scroll-reveal — the class is toggled by EditableMotion. */
+.deco-reveal {
+  opacity: 0;
+  transform: translate3d(0, 26px, 0);
+  transition:
+    opacity 0.85s var(--ease-premium),
+    transform 0.85s var(--ease-premium);
+}
+
+.deco-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.editable-site-root *,
+.editable-site-root *::before,
+.editable-site-root *::after {
+  transition-timing-function: var(--ease-premium);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .editable-enter > * {
-    animation: none;
+  .editable-enter > *,
+  .deco-marquee-track,
+  .deco-pulse,
+  .deco-flicker,
+  .deco-scan {
+    animation: none !important;
+  }
+  .deco-reveal {
+    opacity: 1;
+    transform: none;
   }
   .editable-site-root *,
   .editable-site-root *::before,
   .editable-site-root *::after {
     transition-duration: 0.001ms !important;
-    animation-duration: 0.001ms !important;
   }
 }
 
-.editable-site-root h1,
-.editable-site-root h2,
-.editable-site-root h3,
-.editable-site-root h4,
-.editable-display {
-  font-family: var(--editable-font-display);
-  letter-spacing: -0.02em;
+/* ------------------------------------------------------------------ *
+   Form controls, selection, scrollbar
+ * ------------------------------------------------------------------ */
+
+.editable-site-root select option {
+  background: #14060b;
+  color: #f2ece7;
 }
 
-.editable-site-root p,
-.editable-site-root li,
-.editable-site-root input,
-.editable-site-root button,
-.editable-site-root textarea,
-.editable-site-root label,
-.editable-site-root nav {
-  font-family: var(--editable-font-body);
+.editable-site-root input::placeholder,
+.editable-site-root textarea::placeholder {
+  color: var(--slot4-soft-muted-text);
+}
+
+.editable-site-root input[type='search']::-webkit-search-cancel-button {
+  filter: invert(1);
+  opacity: 0.5;
 }
 
 ::selection {
-  background: color-mix(in oklab, var(--slot4-accent-fill) 28%, transparent);
-  color: var(--slot4-page-text);
+  background: rgba(225, 18, 53, 0.42);
+  color: #fff6f7;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: color-mix(in oklab, var(--slot4-page-bg) 88%, black);
+  background: #0b0206;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: color-mix(in oklab, var(--slot4-accent) 45%, transparent);
+  background: linear-gradient(180deg, #e11235, #71081b);
   border-radius: 999px;
+  border: 2px solid #0b0206;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in oklab, var(--slot4-accent) 68%, transparent);
+  background: linear-gradient(180deg, #ff3355, #a10c26);
+}
+
+/* ------------------------------------------------------------------ *
+   Long-form article body
+ * ------------------------------------------------------------------ */
+
+.article-content {
+  font-family: var(--editable-font-read);
+  font-size: 1.175rem;
+  line-height: 1.85;
+  color: var(--tk-text, #eae1dc);
+}
+
+.article-content > p {
+  margin-bottom: 1.35em;
+}
+
+.article-content h2,
+.article-content h3,
+.article-content h4 {
+  font-family: var(--editable-font-display);
+  color: var(--tk-text, #f4ece7);
+  letter-spacing: -0.02em;
+  margin-top: 2.2em;
+  margin-bottom: 0.6em;
+  line-height: 1.15;
 }
 
 .article-content h2 {
-  color: var(--slot4-accent);
+  font-size: 1.9em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--slot4-line-faint);
+}
+
+.article-content h3 {
+  font-size: 1.45em;
 }
 
 .article-content a {
-  color: var(--slot4-accent-fill);
+  color: var(--slot4-accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(225, 18, 53, 0.4);
+  transition: border-color 0.3s, color 0.3s;
+}
+
+.article-content a:hover {
+  color: #ff5a75;
+  border-bottom-color: #ff5a75;
+}
+
+.article-content ul,
+.article-content ol {
+  margin: 0 0 1.35em 1.15em;
+  padding-left: 0.6em;
+}
+
+.article-content ul {
+  list-style: none;
+}
+
+.article-content ul > li {
+  position: relative;
+  padding-left: 1.1em;
+  margin-bottom: 0.55em;
+}
+
+.article-content ul > li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 6px;
+  height: 6px;
+  transform: rotate(45deg);
+  background: var(--slot4-accent);
+}
+
+.article-content ol > li {
+  margin-bottom: 0.55em;
+}
+
+.article-content blockquote {
+  margin: 2em 0;
+  padding: 0.2em 0 0.2em 1.6em;
+  border-left: 2px solid var(--slot4-accent);
+  font-style: italic;
+  font-size: 1.2em;
+  color: var(--tk-text, #f0e7e2);
+}
+
+.article-content img {
+  width: 100%;
+  height: auto;
+  margin: 2em 0;
+  border: 1px solid var(--slot4-line);
+}
+
+.article-content hr {
+  margin: 2.6em 0;
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--slot4-line), transparent);
+}
+
+.article-content strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.article-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.88em;
+  background: rgba(225, 18, 53, 0.1);
+  border: 1px solid var(--slot4-line-faint);
+  padding: 0.12em 0.4em;
+}
+
+.article-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2em 0;
+  font-family: var(--editable-font-body);
+  font-size: 0.95rem;
+}
+
+.article-content th,
+.article-content td {
+  border: 1px solid var(--slot4-line-faint);
+  padding: 0.7em 0.9em;
+  text-align: left;
+}
+
+.article-content th {
+  background: rgba(225, 18, 53, 0.1);
+  font-weight: 600;
+}
+
+/* Drop cap on the opening paragraph of a long read. */
+.article-content--lede > p:first-of-type::first-letter {
+  float: left;
+  font-family: var(--editable-font-display);
+  font-size: 4.1em;
+  line-height: 0.82;
+  padding: 0.06em 0.12em 0 0;
+  color: var(--slot4-accent);
+  text-shadow: 0 0 24px rgba(225, 18, 53, 0.4);
 }
